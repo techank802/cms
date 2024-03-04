@@ -2,33 +2,33 @@
   <div class="card shadow border-0 mb-7 col-md-6 col-lg-6 bg-dark"> <!-- Added bg-dark class -->
       <div>
         <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-          <script>
-            var xValues = ["Office Supplies", "Pesonal care", "Clothing", "Technology"];
-            var yValues = [102, 200, 120, 54];
-            var barColors = [
-              "#b91d47",
-              "#00aba9",
-              "#2b5797",
-              "#e8c3b9",
-            ];
+        <script>
+          var xValues = {{ category_names|safe }};
+          var yValues = {{ category_item_counts|safe }};
+          var barColors = [
+            "#b91d47",
+            "#00aba9",
+            "#2b5797",
+            "#e8c3b9",
+          ];
 
-            new Chart("myChart", {
-              type: "pie",
-              data: {
-                labels: xValues,
-                datasets: [{
-                  backgroundColor: barColors,
-                  data: yValues
-                }]
-              },
-              options: {
-                title: {
-                  display: true,
-                  text: "Products in stock Pie chart"
-                }
+          new Chart("myChart", {
+            type: "pie",
+            data: {
+              labels: xValues,
+              datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+              }]
+            },
+            options: {
+              title: {
+                display: true,
+                text: "Products in stock Pie chart"
               }
-            });
-          </script>
+            }
+          });
+        </script>
       </div>
   </div>
   <div class="card shadow border-0 mb-7 col-md-6 col-lg-6 bg-dark"> <!-- Added bg-dark class -->
@@ -37,6 +37,7 @@
       <script>
       var xValues = [50,60,70,80,90,100,110,120,130,140,150];
       var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+     
 
       new Chart("myChart4", {
         type: "line",

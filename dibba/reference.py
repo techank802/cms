@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import keras
 sns.set(style="darkgrid")
 from datetime import datetime, timedelta,date
 items=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/items.csv")
@@ -8,6 +9,15 @@ shops=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/shops.csv")
 cats=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/item_categories.csv")
 test=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/test - Copy.csv")
 train=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/sales_train.csv")
+
+
+import tensorflow as tf
+
+# Display TensorFlow version
+print("TensorFlow version:", tf.__version__)
+
+# Display Keras version
+print("Keras version:", keras.__version__)
 
 # Check for Outliers
 # plt.figure(figsize=(10,4))
@@ -87,13 +97,12 @@ X_test, y_test = test_set_scaled[:, 1:], test_set_scaled[:, 0:1]
 X_test = X_test.reshape(X_test.shape[0], 1, X_test.shape[1])
 
 
-import keras
-from keras.layers import Dense, LSTM
 from keras.models import load_model
 
 # Load the model
 model = load_model('C:/Users/ankur/OneDrive/Desktop/dibba/saved_model.hdf5')
 
+print('X_test:', X_test)
 y_pred = model.predict(X_test,batch_size=1)
 
 #reshape y_pred
@@ -124,6 +133,7 @@ df_result = pd.DataFrame(result_list)
 df_result_copy= df_result.copy()
 df_result_copy=df_result_copy.set_index('date')
 print("copy")
+
 
 # fig = plt.figure(figsize=[20,5])
 # fig.suptitle('sales')
