@@ -2,6 +2,10 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from django.conf import settings
+
+# default_storage_alias = getattr(settings, 'DEFAULT_STORAGE_ALIAS', None)
+
 
 
 def main():
