@@ -28,7 +28,7 @@ from django.views.generic.edit import FormMixin
 
 from accounts.models import Profile, Vendor
 from transactions.models import Sale
-from .models import Category, Item, Delivery
+from .models import Category, Item, Delivery,Predictions
 from .forms import ProductForm
 from .tables import ItemTable
 # from keras.models import load_model
@@ -69,7 +69,12 @@ def dashboard(request):
     categories = Category.objects.annotate(nitem=Count('item'))
     category_names = [category.name for category in categories]
     category_item_counts = [category.nitem for category in categories]
-
+    predictions = Predictions.objects.all()
+    prediction_dates =[]
+    prediction_price =[]
+    for prediction in predictions:
+        prediction_dates.append(prediction.date)
+        prediction_price.append(prediction.price)
     #profile pagination
     page = request.GET.get('page', 1)
     paginator = Paginator(profiles, 3)
@@ -168,6 +173,8 @@ def dashboard(request):
 
     # df_result_copy= df_result.copy()
     # df_result_copy=df_result_copy.set_index('date')
+    print(prediction_dates,"prediction_dates")
+    stringified_dates = [date.strftime("%Y-%m-%d") for date in prediction_dates]
     context = {
         
         'items': items,
@@ -180,6 +187,9 @@ def dashboard(request):
         'sales': Sale.objects.all(),
         'category_names': category_names,
         'category_item_counts': category_item_counts,
+        'prediction_dates':prediction_dates,
+        'prediction_price':prediction_price,
+        'stringified_dates':stringified_dates
         # 'result': df_result_copy
     }
     return render(request, 'store/dashboard.html', context)

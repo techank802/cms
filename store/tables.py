@@ -14,3 +14,4 @@ class DeliveryTable(tables.Table):
     class Meta:
         model = Delivery
         fields = ('id', 'item', 'customer_name', 'phone_number', 'location', 'date','is_delivered')
+        

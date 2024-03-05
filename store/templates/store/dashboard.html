@@ -18,6 +18,11 @@
                                     <div class="col">
                                         <span class="h6 font-semibold text-muted text-sm d-block mb-2">Products</span>
                                         <span class="h3 font-bold mb-0">{{total_items}}</span>
+                                        {% for prediction in predictions %}
+                                        {{prediction.date}}
+                                        {{prediction.price}}
+                                        {% endfor %}
+
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-tertiary text-white text-lg rounded-circle">

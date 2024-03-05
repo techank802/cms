@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django_filters',
     'django_tables2',
 
+    'dibba.apps.DibbaConfig',
     'store.apps.StoreConfig',
     'accounts.apps.AccountsConfig',
     'transactions.apps.TransactionsConfig',
