@@ -79,3 +79,11 @@ class Delivery(models.Model):
             f"Delivery of {self.item} to {self.customer_name} "
             f"at {self.location} on {self.date}"
         )
+class Predictions(models.Model):
+    date = models.DateTimeField(max_length=50)
+    price = models.FloatField(max_length=50)
+
+    class Meta:
+        db_table = 'prediction'
+
+

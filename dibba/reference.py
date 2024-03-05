@@ -2,6 +2,55 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import keras
+import sqlite3 
+from sqlite3 import Error
+import os
+import django
+from django.conf import settings
+import sys
+from datetime import datetime
+
+# sys.path = sys.path + ['E:\FINAL CMS\salesandinventoryCMS (1)\salesandinventoryCMS']
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'InventoryMS.settings')
+# django.setup()
+# from models import Prediction
+
+def create_connection():
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(DB_PATH)
+    except Error as e:
+        print(e)
+
+    return conn
+
+
+# This method creates the necessary tables in the database
+def create_table(conn):
+    curr = conn.cursor()
+    curr.execute("""DROP TABLE IF EXISTS prediction""")
+    curr.execute('''CREATE TABLE prediction(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date datetime,
+            price real
+            )''')
+
+
+DB_PATH = r'E:\FINAL CMS\salesandinventoryCMS (1)\salesandinventoryCMS\db.sqlite3'
+conn = create_connection()
+create_table(conn)   
+
+#This method stores into database
+def insert_data(conn, date, price):
+    curr = conn.cursor()
+    curr.execute("INSERT INTO prediction (date, price) VALUES (?, ?)", (date, price))
+    conn.commit()
+        
 sns.set(style="darkgrid")
 from datetime import datetime, timedelta,date
 items=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/items.csv")
@@ -9,7 +58,6 @@ shops=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/shops.csv")
 cats=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/item_categories.csv")
 test=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/test - Copy.csv")
 train=pd.read_csv("C:/Users/ankur/OneDrive/Desktop/dibba/drydata/sales_train.csv")
-
 
 import tensorflow as tf
 
@@ -122,12 +170,23 @@ pred_test_set_inverted = scaler.inverse_transform(pred_test_set)
 result_list = []
 sales_dates = list(train[-10:].date)
 act_sales = list(train[-10:].item_cnt_month)
+price_list=[]
+date_list=[]
 for index in range(0,len(pred_test_set_inverted)):
     result_dict = {}
+    
     result_dict['pred_value'] = int(pred_test_set_inverted[index][0] + act_sales[index])
     result_dict['date'] = sales_dates[index+1]
+    
+    price_list.append(int(pred_test_set_inverted[index][0] + act_sales[index]))
+    date_list.append(sales_dates[index+1])
+    pred_date=datetime.strptime(str(sales_dates[index+1]), '%Y-%m-%d %H:%M:%S')
+    formatted_date = pred_date.strftime('%Y-%m-%d %H:%M:%S')
+    insert_data(conn,formatted_date,int(pred_test_set_inverted[index][0] + act_sales[index]))
     result_list.append(result_dict)
+    
 df_result = pd.DataFrame(result_list)
+print(df_result)
 #for multistep prediction, replace act_sales with the predicted sales
 
 df_result_copy= df_result.copy()
